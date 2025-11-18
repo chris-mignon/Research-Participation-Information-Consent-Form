@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Raffle Ticket Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; display:flex; justify-content:center;}
+    .container { background:white; padding:20px 30px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); max-width:500px; width:100%; text-align:center;}
+    .ticket { margin-top:20px; padding:15px; background:#eef; border:2px dashed #446; border-radius:8px; font-size:1.4rem; letter-spacing:2px; display:none;}
+    button { padding:10px 20px; font-size:1rem; border:none; border-radius:6px; cursor:pointer; background:#4b79ff; color:white; }
+    button:hover { background:#355fe0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Raffle Ticket Generator</h2>
+    <p>Click the button below to get your raffle code (one per user).</p>
+    <button id="genBtn">Generate Ticket</button>
+
+    <div id="ticket" class="ticket"></div>
+    <button id="printBtn" style="display:none; margin-top:15px;" onclick="window.print()">Print Ticket</button>
+  </div>
+
+  <script>
+    async function requestTicket() {
+      const btn = document.getElementById('genBtn');
+      btn.disabled = true;
+      btn.innerText = 'Please wait...';
+
+      try {
+        const res = await fetch('generate.php', { method: 'POST' });
+        if (!res.ok) throw new Error('Network response not OK');
+        const text = await res.text();
+
+        // server responds with the code or an error string prefixed with "ERROR:"
+        if (text.startsWith('ERROR:')) {
+          alert(text.replace('ERROR:', ''));
+        } else {
+          document.getElementById('ticket').style.display = 'block';
+          document.getElementById('ticket').innerText = 'Your Raffle Code: ' + text;
+          document.getElementById('printBtn').style.display = 'inline-block';
+        }
+      } catch (e) {
+        alert('Could not get ticket: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Generate Ticket';
+      }
+    }
+
+    document.getElementById('genBtn').addEventListener('click', requestTicket);
+  </script>
+</body>
+</html>
