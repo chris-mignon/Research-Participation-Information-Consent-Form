@@ -4,7 +4,7 @@ define('FILE_TICKETS', __DIR__ . '/raffle_codes.txt');
 
 // --- CONFIG: change these to secure values ---
 $ADMIN_USER = 'admin';
-$ADMIN_PASS = 'ChangeMeStrongPassword!';
+$ADMIN_PASS = '1234567890';
 // ------------------------------------------------
 
 if (!isset($_SERVER['PHP_AUTH_USER'])) {
